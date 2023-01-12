@@ -1,22 +1,36 @@
 import io
 
-from fastapi import FastAPI, Response
-from utils import get_pallete_image, generate_palette
+from fastapi import FastAPI
+from utils import get_pallete
+
+from fastapi.middleware.cors import CORSMiddleware
+
+from base64 import b64encode
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+]
 
-@app.get(
-    "/",
-    responses={200: {"content": {"image/png": {}}}},
-    response_class=Response,
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+
+@app.get("/")
 async def get_image(width: int = 600, height: int = 400):
-    pallete = await generate_palette()
-    image_pallete = get_pallete_image(pallete, width, height)
+    colors, pallete_img = await get_pallete(width, height)
     image: io.BytesIO = io.BytesIO()
 
-    image_pallete.save(image, format="PNG")
-    image: bytes = image.getvalue()
+    pallete_img.save(image, format="PNG")
+    image: bytes = b64encode(image.getvalue())
 
-    return Response(content=image, media_type="image/png")
+    return {
+        'image': image,
+        'colors': colors,
+    }

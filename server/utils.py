@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 
 async def post(
-    url: str, data: dict | str, session: aiohttp.ClientSession
+        url: str, data: dict | str, session: aiohttp.ClientSession
 ) -> list[dict]:
     """Send post request with data to the url and read response"""
 
@@ -30,14 +30,20 @@ async def generate_palette() -> list[tuple[int, int, int]]:
 
 
 def draw_rectangle(
-    coords: tuple[int, int, int, int], fill: tuple[int, int, int], image: ImageDraw.Draw
+        coords: tuple[int, int, int, int], fill: tuple[int, int, int], image: ImageDraw.Draw
 ) -> None:
     """Draw rectangle on the image"""
 
     image.rectangle(coords, fill=fill)
 
 
-def get_pallete_image(colors: list[tuple[int, int, int]], width: int, height: int):
+def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
+    """Rgb to hex"""
+
+    return '%02x%02x%02x' % rgb
+
+
+def get_pallete_image(colors: list[tuple[int, int, int]], width: int, height: int) -> Image:
     """Get pallete image from five colors"""
 
     img = Image.new("RGB", (width, height), "gray")
@@ -51,3 +57,10 @@ def get_pallete_image(colors: list[tuple[int, int, int]], width: int, height: in
         draw_rectangle(coords, fill, image_draw)
 
     return img
+
+
+async def get_pallete(width: int, height: int) -> tuple[list[str], Image]:
+    pallete = await generate_palette()
+    img = get_pallete_image(pallete, width, height)
+
+    return list(map(rgb_to_hex, pallete)), img
