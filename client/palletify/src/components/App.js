@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import Pallete from './components/Pallete';
+import Pallete from './Pallete';
 
 export default function App() {
     const darkTheme = createTheme({

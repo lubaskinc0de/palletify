@@ -9,8 +9,8 @@ export default function PalleteColors({ colors }) {
             wordBreak: 'break-all'
         }} spacing={2}>
             {colors.map((el) => (
-                <Typography key={el} sx={{ color: '#' + el }}>
-                    #{el}
+                <Typography key={el} sx={{ color: el }}>
+                    {el}
                 </Typography>
             ))}
         </Stack>

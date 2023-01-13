@@ -1,43 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import PalleteImage from './PalleteImage';
 import PalleteColors from './PalleteColors';
 import PalleteImageSkeleton from './PalleteImageSkeleton';
 import PalleteColorsSkeleton from './PalleteColorsSkeleton';
 
-import { getPalleteImage } from '../api';
-import { b64toBlob } from '../lib';
+import { usePalleteImage } from '../hooks/usePalleteImage';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
 export default function Pallete() {
-    const [loading, setLoading] = useState(false);
-    const [image, setImage] = useState(null);
-    const [colors, setColors] = useState([]);
+    const [loading, error, image, colors, fetchImage] = usePalleteImage();
 
-    const fetchImage = () => {
-        setLoading(true);
-        getPalleteImage()
-            .then((response) => {
-                response.json().then((data) => {
-                    const b64Blob = b64toBlob(data.image);
-                    const imageUrl = URL.createObjectURL(b64Blob);
-
-                    setImage(imageUrl);
-                    setColors(data.colors);
-                });
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    };
-
-    useEffect(() => {
-        fetchImage();
-    }, []);
-    return (
+    return !error ? (
         <Stack width='100%' spacing={2}>
             {loading ? (
                 <PalleteImageSkeleton></PalleteImageSkeleton>
@@ -58,5 +36,7 @@ export default function Pallete() {
                 Generate
             </LoadingButton>
         </Stack>
+    ) : (
+        <Typography variant='h3' color='red'>ERROR</Typography>
     );
 }

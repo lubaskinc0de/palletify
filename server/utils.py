@@ -40,7 +40,7 @@ def draw_rectangle(
 def rgb_to_hex(rgb: tuple[int, int, int]) -> str:
     """Rgb to hex"""
 
-    return '%02x%02x%02x' % rgb
+    return '#%02x%02x%02x' % rgb
 
 
 def get_pallete_image(colors: list[tuple[int, int, int]], width: int, height: int) -> Image:
